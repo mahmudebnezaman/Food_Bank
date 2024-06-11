@@ -10,10 +10,16 @@ class RestaurantUI extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        textTheme: const TextTheme(
+          // labelLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+          titleLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,
       ),
-      home:const RestaurantHomeView(title: 'UI',),
+      home: const RestaurantHomeView(
+        title: 'UI',
+      ),
     );
   }
 }

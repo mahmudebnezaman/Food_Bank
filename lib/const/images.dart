@@ -12,8 +12,8 @@ String  lunchImage3 = 'https://images.pexels.com/photos/825661/pexels-photo-8256
 
 List lunchImages = [lunchImage1, lunchImage2, lunchImage3, lunchImage1, lunchImage2, lunchImage3];
 
-String dinnerImage1 = 'https://images.pexels.com/photos/1833349/pexels-photo-1833349.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
-String dinnerImage2 = 'https://images.pexels.com/photos/2092906/pexels-photo-2092906.jpeg?auto=compress&cs=tinysrgb&w=600';
-String dinnerImage3 = 'https://images.pexels.com/photos/20532524/pexels-photo-20532524/free-photo-of-dinner-plate-with-meat-french-fries-and-salad.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+String dinnerImage1 = 'https://images.pexels.com/photos/7353393/pexels-photo-7353393.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+String dinnerImage2 = 'https://images.pexels.com/photos/16423838/pexels-photo-16423838/free-photo-of-roasted-chicken-with-fries-and-salad.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+String dinnerImage3 = 'https://images.pexels.com/photos/4877838/pexels-photo-4877838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
 List dinnerImages = [dinnerImage1, dinnerImage2, dinnerImage3, dinnerImage1, dinnerImage2, dinnerImage3];

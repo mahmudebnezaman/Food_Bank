@@ -4,38 +4,45 @@ import 'package:restuarant_ui/views/food_details.dart';
 import 'package:restuarant_ui/views/widgets/food_item.dart';
 
 Widget buildCategoryCard(
-    {required String title, required List <OrderItem> orderItem, required BuildContext context}) {
+    {required String title,
+    required List<OrderItem> orderItem,
+    required BuildContext context,
+    }) {
+  double height = MediaQuery.sizeOf(context).height * 0.45;
+  double width = MediaQuery.sizeOf(context).width * 0.3;
   return Column(
     children: [
       Text(
         title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
+        style: Theme.of(context).textTheme.titleLarge,
       ),
       const SizedBox(
         height: 10,
       ),
-      InkWell(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> const FoodDetails()));
-        },
-        child: Card(
-          clipBehavior: Clip.antiAlias,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32.0),
-          ),
-          color: Colors.white,
-          child: SizedBox(
-            height: 390,
-            width: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemBuilder: (context, index) => foodItem(imageUrl: orderItem[index].foodImage),
-              itemCount: orderItem.length,
+      Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(32.0),
+        ),
+        color: Colors.white,
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemBuilder: (context, index) => InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FoodDetails(
+                              orderItem: orderItem[index],
+                            )));
+              },
+              child: foodItem(imageUrl: orderItem[index].foodImage, foodName: orderItem[index].foodName),
             ),
+            itemCount: orderItem.length,
           ),
         ),
       ),

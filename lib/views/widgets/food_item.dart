@@ -1,34 +1,20 @@
 import 'package:flutter/material.dart';
-Widget foodItem({imageUrl}) {
+Widget foodItem({imageUrl, foodName}) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
-    child: Stack(
-      alignment: Alignment.bottomLeft,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        CircleAvatar(
+          radius: 40,
           child: CircleAvatar(
-            radius: 45,
-            child: CircleAvatar(
-              radius: 30,
-              backgroundImage: NetworkImage(
-                imageUrl,
-              ),
+            radius: 35,
+            backgroundImage: NetworkImage(
+              imageUrl,
             ),
           ),
         ),
-        const CircleAvatar(
-          radius: 12,
-          child: CircleAvatar(
-            radius: 10,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.add,
-              color: Colors.orange,
-              size: 20,
-            ),
-          ),
-        ),
+        Text(foodName, textAlign: TextAlign.center,),
       ],
     ),
   );
