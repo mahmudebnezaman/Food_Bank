@@ -17,3 +17,5 @@ String dinnerImage2 = 'https://images.pexels.com/photos/16423838/pexels-photo-16
 String dinnerImage3 = 'https://images.pexels.com/photos/4877838/pexels-photo-4877838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
 List dinnerImages = [dinnerImage1, dinnerImage2, dinnerImage3, dinnerImage1, dinnerImage2, dinnerImage3];
+
+String addBanner = 'https://img.freepik.com/free-vector/fast-free-delivery-logo-with-bike-man-courier_1308-49043.jpg?w=996&t=st=1718173005~exp=1718173605~hmac=f416c0f8dcb0499118bdf6ddb32975d841204ecf32288a478dac43ce228d64a9';

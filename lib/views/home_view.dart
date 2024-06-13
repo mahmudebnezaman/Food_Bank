@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restuarant_ui/views/cart.dart';
-import 'package:restuarant_ui/views/dashboard.dart';
-// import 'package:restuarant_ui/views/dashboard.dart';
+import 'package:restuarant_ui/views/page_zero.dart';
 
 class RestaurantHomeView extends StatefulWidget {
   const RestaurantHomeView({super.key, required this.title});
@@ -16,7 +15,8 @@ class _RestaurantHomeViewState extends State<RestaurantHomeView> {
   int _selectedIndex = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    const Dashboard(),
+    // const Dashboard(),
+    const PageZero(),
     const CartView(),
   ];
 
