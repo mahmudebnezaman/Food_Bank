@@ -20,3 +20,4 @@ String addBanner = 'https://img.freepik.com/free-vector/fast-free-delivery-logo-
 String dineInImage = 'assets/icons/dine_in.png';
 String homeDeliveryImage = 'assets/icons/home_delivery.png';
 String takeAwayImage = 'assets/icons/take_away.png';
+String fireImage = 'assets/icons/fire.png';

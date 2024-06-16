@@ -150,14 +150,14 @@ class _FoodDetailsState extends State<FoodDetails> {
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const Gap(10),
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      autoPlay: true,
-                      aspectRatio: 2.0,
-                      enlargeCenterPage: true,
-                    ),
-                    items: imageSliders,
-                  ),
+                  // CarouselSlider(
+                  //   options: CarouselOptions(
+                  //     autoPlay: true,
+                  //     aspectRatio: 2.0,
+                  //     enlargeCenterPage: true,
+                  //   ),
+                  //   items: imageSliders,
+                  // ),
                 ],
               ),
             ],
@@ -186,7 +186,7 @@ class _FoodDetailsState extends State<FoodDetails> {
           if (!itemExists) {
             cartItems.add(
               OrderItem(
-                dineTime: widget.orderItem.dineTime,
+                foodType: widget.orderItem.foodType,
                 foodName: widget.orderItem.foodName,
                 foodImage: widget.orderItem.foodImage,
                 foodDetails: widget.orderItem.foodDetails,
@@ -224,47 +224,47 @@ class _FoodDetailsState extends State<FoodDetails> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
-
-  final List<Widget> imageSliders = lunchMenu
-      .map((item) => Container(
-            margin: const EdgeInsets.all(5.0),
-            child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                child: Stack(
-                  children: <Widget>[
-                    Image.network(item.foodImage,
-                        fit: BoxFit.cover, width: 1000.0),
-                    Positioned(
-                      bottom: 0.0,
-                      left: 0.0,
-                      right: 0.0,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color.fromARGB(200, 0, 0, 0),
-                              Color.fromARGB(0, 0, 0, 0)
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                          ),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        child: Text(
-                          item.foodName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
-          ))
-      .toList();
+  //
+  // final List<Widget> imageSliders = lunchMenu
+  //     .map((item) => Container(
+  //           margin: const EdgeInsets.all(5.0),
+  //           child: ClipRRect(
+  //               borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+  //               child: Stack(
+  //                 children: <Widget>[
+  //                   Image.network(item.foodImage,
+  //                       fit: BoxFit.cover, width: 1000.0),
+  //                   Positioned(
+  //                     bottom: 0.0,
+  //                     left: 0.0,
+  //                     right: 0.0,
+  //                     child: Container(
+  //                       decoration: const BoxDecoration(
+  //                         gradient: LinearGradient(
+  //                           colors: [
+  //                             Color.fromARGB(200, 0, 0, 0),
+  //                             Color.fromARGB(0, 0, 0, 0)
+  //                           ],
+  //                           begin: Alignment.bottomCenter,
+  //                           end: Alignment.topCenter,
+  //                         ),
+  //                       ),
+  //                       padding: const EdgeInsets.symmetric(
+  //                           vertical: 10.0, horizontal: 20.0),
+  //                       child: Text(
+  //                         item.foodName,
+  //                         style: const TextStyle(
+  //                           color: Colors.white,
+  //                           fontSize: 20.0,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               )),
+  //         ))
+  //     .toList();
 
   // void increaseFunctionality() {
   //   quantity++;

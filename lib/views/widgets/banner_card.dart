@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:restuarant_ui/const/images.dart';
 
 class OrderTypeCard extends StatelessWidget {
   final String image;
@@ -36,4 +38,18 @@ class OrderTypeCard extends StatelessWidget {
       ),
     );
   }
+}
+
+
+Row buildOrderTypeRow() {
+  return Row(
+    children: [
+      OrderTypeCard(image: dineInImage, title: 'Dine In'),
+      const Gap(10),
+      OrderTypeCard(
+          image: homeDeliveryImage, title: 'Home\nDelivery'),
+      const Gap(10),
+      OrderTypeCard(image: takeAwayImage, title: 'Take\nAway'),
+    ],
+  );
 }

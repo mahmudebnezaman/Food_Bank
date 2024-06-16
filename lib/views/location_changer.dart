@@ -70,9 +70,7 @@ class _LocationChangerState extends State<LocationChanger> {
     return Scaffold(
       body: Stack(
         children: [
-          SafeArea(
-            child: showMap(newLocation),
-          ),
+          showMap(newLocation),
           Positioned(
             top: 50.0,
             left: 10.0,

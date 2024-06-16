@@ -12,7 +12,7 @@ import 'package:restuarant_ui/views/widgets/searc_bar.dart';
 import 'package:restuarant_ui/views/widgets/store_card.dart';
 import 'package:restuarant_ui/modal/location.dart';
 import 'package:restuarant_ui/control/get_address_from_lat_lng.dart';
-import 'package:restuarant_ui/views/dashboard.dart';
+import 'package:restuarant_ui/views/store_dashboard.dart';
 
 typedef Location = List<double> Function(dynamic data);
 
@@ -91,17 +91,7 @@ class _PageZeroState extends State<PageZero> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const CustomSearchBar(),
-                Row(
-                  children: [
-                    OrderTypeCard(image: dineInImage, title: 'Dine In'),
-                    const Gap(10),
-                    OrderTypeCard(
-                        image: homeDeliveryImage, title: 'Home\nDelivery'),
-                    const Gap(10),
-                    OrderTypeCard(image: takeAwayImage, title: 'Take\nAway'),
-                  ],
-                ),
-                // const Gap(5),
+                buildOrderTypeRow(),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 4.0,
@@ -109,9 +99,15 @@ class _PageZeroState extends State<PageZero> {
                   ),
                   child: Row(
                     children: [
-                      Text(
-                        'Restaurant Near You',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      Row(
+                        children: [
+                          Text(
+                            'Restaurant Near You',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const Gap(5),
+                          Image.asset(fireImage, height: 20,),
+                        ],
                       ),
                       const Spacer(),
                       Text(
@@ -137,7 +133,7 @@ class _PageZeroState extends State<PageZero> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Dashboard(),
+                              builder: (context) => StoreDashboard(store: storeDetails[_currentAddress]![index],),
                             ));
                       },
                       child: SizedBox(

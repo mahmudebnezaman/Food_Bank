@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class OrderItem {
-  final String dineTime;
+  final String foodType;
   final String foodName;
   final String foodImage;
   final String foodDetails;
@@ -9,7 +9,7 @@ class OrderItem {
   double price;
 
   OrderItem({
-    required this.dineTime,
+    required this.foodType,
     required this.foodName,
     required this.foodImage,
     required this.foodDetails,
@@ -20,7 +20,7 @@ class OrderItem {
   static OrderItem fromJson(String jsonString) {
     final Map<String, dynamic> map = jsonDecode(jsonString);
     return OrderItem(
-      dineTime: map['dineTime'] as String,
+      foodType: map['dineTime'] as String,
       foodName: map['foodName'] as String,
       foodImage: map['foodImage'] as String,
       foodDetails: map['foodDetails'] as String,
@@ -30,7 +30,7 @@ class OrderItem {
   }
 
   Map<String, dynamic> toJson() => {
-        'dineTime': dineTime,
+        'dineTime': foodType,
         'foodName': foodName,
         'foodImage': foodImage,
         'foodDetails': foodDetails,

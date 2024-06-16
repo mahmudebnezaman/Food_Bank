@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restuarant_ui/const/menu.dart';
 import 'package:restuarant_ui/modal/order_item.dart';
 import 'package:restuarant_ui/views/food_details.dart';
 import 'package:restuarant_ui/views/widgets/food_item.dart';
@@ -40,7 +41,7 @@ Widget buildCategoryCard(
                               orderItem: orderItem[index],
                             )));
               },
-              child: foodItem(imageUrl: orderItem[index].foodImage, foodName: orderItem[index].foodName),
+              child: FoodItem(orderItem: menu[index],),
             ),
             itemCount: orderItem.length,
           ),

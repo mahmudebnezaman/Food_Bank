@@ -22,7 +22,7 @@ class CustomSearchBar extends StatelessWidget {
         fillColor: Colors.orange,
         filled: true,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
       ),
