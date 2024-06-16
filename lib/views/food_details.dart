@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:gap/gap.dart';
 import 'package:restuarant_ui/const/menu.dart';
-import 'package:restuarant_ui/entities/order_item.dart';
+import 'package:restuarant_ui/modal/order_item.dart';
 // import 'package:restuarant_ui/views/widgets/quantity_changer_button.dart';
 
 class FoodDetails extends StatefulWidget {

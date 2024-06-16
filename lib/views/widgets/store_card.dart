@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:restuarant_ui/const/images.dart';
 
 class StoreCard extends StatelessWidget {
+  final String storeImage;
+  final String storeName;
+  final String address;
+
   const StoreCard({
-    super.key,
+    super.key, required this.storeImage,required this.storeName,required this.address
   });
 
   @override
@@ -14,39 +17,77 @@ class StoreCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(bannermage,isAntiAlias: true, height: 200, width: 300, fit: BoxFit.cover,),
+          AspectRatio(
+            aspectRatio: 1.5,
+            child: Image.asset(
+              storeImage,
+              fit: BoxFit.cover,
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 8.0, top: 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  storeName,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 Row(
                   children: [
-                    Text('Pizza House', style: Theme.of(context).textTheme.titleLarge,),
-                    const Gap(5),
-                    const Icon(Icons.star, color: Colors.orange,),
-                    const Text('4.5'),
+                    const Icon(
+                      Icons.star,
+                      color: Colors.orange,
+                      size: 15,
+                    ),
+                    Text(
+                      '(4.5)',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
                 Row(
                   children: [
-                    Text('Naryanganj', style: Theme.of(context).textTheme.bodyMedium,),
-                    const Icon(Icons.location_pin, size: 14,),
+                    const Icon(
+                      Icons.location_pin,
+                      size: 15,
+                    ),
+                    const Gap(2),
+                    Text(
+                      address,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.delivery_dining),
-                    Gap(2),
-                    Text('Free Delivery'),
-                    Gap(30),
-                    Icon(Icons.timer_outlined),Gap(2),
-                    Text('20-30 minutes'),
+                    const Icon(
+                      Icons.delivery_dining,
+                      size: 15,
+                    ),
+                    const Gap(2),
+                    Text(
+                      'Free Delivery',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.timer_rounded,
+                      size: 15,
+                    ),
+                    const Gap(2),
+                    Text(
+                      '20-30 minutes',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

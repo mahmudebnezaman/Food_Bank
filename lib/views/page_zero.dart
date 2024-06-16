@@ -1,19 +1,18 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:restuarant_ui/entities/location.dart';
-import 'package:restuarant_ui/modal/get_address_from_lat_lng.dart';
-import 'package:restuarant_ui/views/dashboard.dart';
 import 'package:gap/gap.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
-// import 'package:latlong2/latlong.dart' as coordinates;
 
 import 'package:restuarant_ui/const/images.dart';
+import 'package:restuarant_ui/const/storedetails.dart';
+import 'package:restuarant_ui/modal/store.dart';
 import 'package:restuarant_ui/views/location_changer.dart';
+import 'package:restuarant_ui/views/widgets/banner_card.dart';
 import 'package:restuarant_ui/views/widgets/searc_bar.dart';
 import 'package:restuarant_ui/views/widgets/store_card.dart';
+import 'package:restuarant_ui/modal/location.dart';
+import 'package:restuarant_ui/control/get_address_from_lat_lng.dart';
+import 'package:restuarant_ui/views/dashboard.dart';
 
 typedef Location = List<double> Function(dynamic data);
 
@@ -36,6 +35,7 @@ class _PageZeroState extends State<PageZero> {
   @override
   void initState() {
     super.initState();
+    storeNames();
     getAddress(context);
   }
 
@@ -49,7 +49,6 @@ class _PageZeroState extends State<PageZero> {
       _currentPosition!.latitude,
       _currentPosition!.longitude,
     );
-    log('$_currentAddress page 0');
     setState(() {});
   }
 
@@ -62,62 +61,77 @@ class _PageZeroState extends State<PageZero> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.sizeOf(context).height;
-    double width = MediaQuery.sizeOf(context).width;
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Text(_currentAddress ?? 'Detecting Location'),
-            IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => selectMapDialog(
-                      ctx, _currentAddress ?? 'Detecting Location'),
-                );
-              },
-              icon: const Icon(Icons.location_pin),
-            ),
-          ],
-        ),
+    return Visibility(
+      visible: _currentAddress!=null,
+      replacement:const Center(
+        child: CircularProgressIndicator(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Expanded(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            children: [
+              Text(_currentAddress ?? 'Detecting Location'),
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => selectMapDialog(
+                        ctx, _currentAddress ?? 'Detecting Location'),
+                  );
+                },
+                icon: const Icon(Icons.location_pin),
+              ),
+            ],
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomSearchBar(
-                  height: height,
-                  width: width,
-                  bannerText: "Find and Order\nFoods for you.",
-                ),
-                const Gap(5),
+                const CustomSearchBar(),
                 Row(
                   children: [
-                    Text(
-                      'Restaurant Near You',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    const Spacer(),
-                    Text(
-                      'View All',
-                      style: TextStyle(
-                        fontSize:
-                            Theme.of(context).textTheme.bodyMedium!.fontSize,
-                        color: Colors.orange,
-                      ),
-                    ),
+                    OrderTypeCard(image: dineInImage, title: 'Dine In'),
+                    const Gap(10),
+                    OrderTypeCard(
+                        image: homeDeliveryImage, title: 'Home\nDelivery'),
+                    const Gap(10),
+                    OrderTypeCard(image: takeAwayImage, title: 'Take\nAway'),
                   ],
                 ),
+                // const Gap(5),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4.0,
+                    horizontal: 8.0,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Restaurant Near You',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      const Spacer(),
+                      Text(
+                        'View All',
+                        style: TextStyle(
+                          fontSize:
+                              Theme.of(context).textTheme.bodyMedium!.fontSize,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(
-                  height: 300,
+                  height: MediaQuery.sizeOf(context).height * 0.27,
                   child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: 5,
+                    itemCount: storeDetails[_currentAddress]?.length ?? 2,
+                    // itemCount: 14,
                     itemBuilder: (context, index) => InkWell(
                       onTap: () {
                         Navigator.push(
@@ -126,12 +140,21 @@ class _PageZeroState extends State<PageZero> {
                               builder: (context) => const Dashboard(),
                             ));
                       },
-                      child: const StoreCard(),
+                      child: SizedBox(
+                        width: MediaQuery.sizeOf(context).width * 0.4,
+                        child:StoreCard(
+                          address: storeDetails[_currentAddress]![index].address,
+                          storeImage: storeDetails[_currentAddress]![index].storeBanner,
+                          storeName: storeDetails[_currentAddress]![index].storeName,
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    print(storeDetails[_currentAddress]);
+                  },
                   child: Card(
                     clipBehavior: Clip.antiAlias,
                     child: Image.network(
@@ -141,6 +164,25 @@ class _PageZeroState extends State<PageZero> {
                       fit: BoxFit.cover,
                     ),
                   ),
+                ),
+                GridView.builder(
+                  reverse: true,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 8.0,
+                      crossAxisSpacing: 8.0,
+                      mainAxisExtent: 250),
+                  padding: const EdgeInsets.all(8.0),
+                  itemCount:storeDetails[_currentAddress]?.length ?? 2,
+                  itemBuilder: (context, index) {
+                    return StoreCard(
+                      address: storeDetails[_currentAddress]![index].address,
+                      storeImage: storeDetails[_currentAddress]![index].storeBanner,
+                      storeName: storeDetails[_currentAddress]![index].storeName,
+                    );
+                  },
                 )
               ],
             ),
@@ -154,11 +196,11 @@ class _PageZeroState extends State<PageZero> {
     return AlertDialog(
       title: Wrap(
         children: [
+          const Icon(Icons.location_pin),
           Text(
             currentLocation,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const Icon(Icons.location_pin),
         ],
       ),
       content: _showMap(),

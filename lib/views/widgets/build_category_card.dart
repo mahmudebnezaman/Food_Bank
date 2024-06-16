@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:restuarant_ui/entities/order_item.dart';
+import 'package:restuarant_ui/modal/order_item.dart';
 import 'package:restuarant_ui/views/food_details.dart';
 import 'package:restuarant_ui/views/widgets/food_item.dart';
 

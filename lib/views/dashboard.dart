@@ -9,7 +9,6 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
-    double width = MediaQuery.sizeOf(context).width;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -18,7 +17,7 @@ class Dashboard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                CustomSearchBar(height: height, width: width, bannerText: 'Shop Name',),
+                const CustomSearchBar(),
                 SizedBox(
                   height: height * 0.02,
                 ),

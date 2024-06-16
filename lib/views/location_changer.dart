@@ -4,11 +4,22 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:restuarant_ui/entities/location.dart';
-import 'package:restuarant_ui/modal/get_address_from_lat_lng.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
+
+// import 'package:latlong2/latlong.dart';
+import 'package:restuarant_ui/modal/location.dart';
+import 'package:restuarant_ui/control/get_address_from_lat_lng.dart';
+
+import '../control/get_coordinates_from_search.dart';
 
 class LocationChanger extends StatefulWidget {
-  const LocationChanger({super.key, required this.selectedLocation, required this.onLocationSaved});
+  const LocationChanger(
+      {super.key,
+      required this.selectedLocation,
+      required this.onLocationSaved});
+
   final SimpleLocationResult selectedLocation;
   final Function(SimpleLocationResult) onLocationSaved;
 
@@ -22,23 +33,36 @@ class _LocationChangerState extends State<LocationChanger> {
   late SimpleLocationResult newLocation;
   String? _currentAddress;
   final _searchController = TextEditingController();
+  Position? _currentPosition;
+  late MapController _mapController = MapController();
 
   @override
   void initState() {
     super.initState();
     newLocation = widget.selectedLocation;
+    _mapController = MapController();
     getAddress(context);
   }
 
   void getAddress(context) async {
     _currentAddress =
         await getAddressFromLatLng(newLocation.latitude, newLocation.longitude);
-    log('$_currentAddress page 0');
     setState(() {});
   }
 
   Future<void> searchLocation(String searchTerm) async {
     log('Searching for $searchTerm');
+    final coordinates = await getCoordinatesFromSearch(searchTerm);
+    if (coordinates != null) {
+      changeLocation(coordinates['latitude']!, coordinates['longitude']!);
+      newLocation = SimpleLocationResult(
+          coordinates['latitude']!, coordinates['longitude']!);
+      _mapController.move(newLocation.getLatLng(), zoomLevel);
+      setState(() {});
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Location not found')));
+    }
   }
 
   @override
@@ -59,15 +83,43 @@ class _LocationChangerState extends State<LocationChanger> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: TextField(
+              child: TypeAheadField(
                 controller: _searchController,
-                onSubmitted: (searchTerm) => searchLocation(searchTerm),
-                decoration: InputDecoration(
-                  hintText: 'Search for location...',
-                  border: InputBorder.none,
-                  suffixIcon: IconButton(onPressed: (){searchLocation(_searchController.text);}, icon: const Icon(Icons.search)),
-                  prefixIcon: IconButton(onPressed: (){Navigator.pop(context);}, icon: const Icon(Icons.arrow_back)),
+                builder: (context, controller, focusNode) => TextField(
+                  onSubmitted: (searchTerm){
+                    searchLocation(searchTerm);
+                  },
+                  controller: controller,
+                  focusNode: focusNode,
+                  // autofocus: true,
+                  decoration: InputDecoration(
+                    hintText: 'Search for location...',
+                    border: InputBorder.none,
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          searchLocation(_searchController.text);
+                        },
+                        icon: const Icon(Icons.search)),
+                    prefixIcon: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.arrow_back)),
+                  ),
                 ),
+                suggestionsCallback: (pattern) async {
+                  return await getAutocompleteSuggestions(pattern);
+                },
+                itemBuilder: (context, suggestion) {
+                  return ListTile(
+                    title: Text(suggestion.toString()),
+                  );
+                },
+                onSelected: (suggestion) async {
+                  _searchController.text = suggestion.toString();
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  await searchLocation(suggestion.toString());
+                },
               ),
             ),
           ),
@@ -75,24 +127,41 @@ class _LocationChangerState extends State<LocationChanger> {
       ),
       bottomSheet: Card(
         child: SizedBox(
-          height: 100.0,
+          height: 150.0,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              InkWell(
+                onTap: () {
+                  getCurrentAddress(context);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.my_location_rounded),
+                    Text(
+                      'Select current location',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(2),
+              const Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Icon(Icons.location_pin),
                   Text(
                     _currentAddress ?? 'Location permission not granted!',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const Icon(Icons.location_pin),
                 ],
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context); 
-                  widget.onLocationSaved(newLocation); 
+                  Navigator.pop(context);
+                  widget.onLocationSaved(newLocation);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
@@ -113,7 +182,7 @@ class _LocationChangerState extends State<LocationChanger> {
       width: double.maxFinite,
       child: FlutterMap(
         options: MapOptions(
-          initialCenter: widget.selectedLocation.getLatLng(),
+          initialCenter: selectedLocation.getLatLng(),
           initialZoom: zoomLevel,
           onTap: (tapLoc, position) {
             if (true) {
@@ -121,6 +190,7 @@ class _LocationChangerState extends State<LocationChanger> {
             }
           },
         ),
+        mapController: _mapController,
         children: [
           TileLayer(
             urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -145,6 +215,21 @@ class _LocationChangerState extends State<LocationChanger> {
   void changeLocation(latitude, longitude) async {
     newLocation = SimpleLocationResult(latitude, longitude);
     _currentAddress = await getAddressFromLatLng(latitude, longitude);
+    // _mapController.move(newLocation.getLatLng(), zoomLevel);
+    setState(() {});
+  }
+
+  void getCurrentAddress(context) async {
+    _currentPosition = await getCurrentPosition(context);
+    _currentAddress = await getAddressFromLatLng(
+      _currentPosition!.latitude,
+      _currentPosition!.longitude,
+    );
+    newLocation = SimpleLocationResult(
+      _currentPosition!.latitude,
+      _currentPosition!.longitude,
+    );
+    _mapController.move(newLocation.getLatLng(), zoomLevel);
     setState(() {});
   }
 }
