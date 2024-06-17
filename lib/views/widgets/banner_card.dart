@@ -44,7 +44,7 @@ class OrderTypeCard extends StatelessWidget {
 Row buildOrderTypeRow() {
   return Row(
     children: [
-      OrderTypeCard(image: dineInImage, title: 'Dine In'),
+      OrderTypeCard(image: dineInImage, title: 'Dine-In'),
       const Gap(10),
       OrderTypeCard(
           image: homeDeliveryImage, title: 'Home\nDelivery'),

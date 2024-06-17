@@ -173,10 +173,19 @@ class _PageZeroState extends State<PageZero> {
                   padding: const EdgeInsets.all(8.0),
                   itemCount:storeDetails[_currentAddress]?.length ?? 2,
                   itemBuilder: (context, index) {
-                    return StoreCard(
-                      address: storeDetails[_currentAddress]![index].address,
-                      storeImage: storeDetails[_currentAddress]![index].storeBanner,
-                      storeName: storeDetails[_currentAddress]![index].storeName,
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => StoreDashboard(store: storeDetails[_currentAddress]![index],),
+                            ));
+                      },
+                      child: StoreCard(
+                        address: storeDetails[_currentAddress]![index].address,
+                        storeImage: storeDetails[_currentAddress]![index].storeBanner,
+                        storeName: storeDetails[_currentAddress]![index].storeName,
+                      ),
                     );
                   },
                 )

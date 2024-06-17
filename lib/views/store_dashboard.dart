@@ -1,14 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:gap/gap.dart';
+
 import 'package:restuarant_ui/const/images.dart';
 import 'package:restuarant_ui/const/menu.dart';
+import 'package:restuarant_ui/modal/order_item.dart';
 import 'package:restuarant_ui/modal/store.dart';
 import 'package:restuarant_ui/views/widgets/banner_card.dart';
-import 'package:restuarant_ui/views/widgets/build_category_card.dart';
+import 'package:restuarant_ui/views/widgets/build_store_bottom_sheet_content.dart';
 import 'package:restuarant_ui/views/widgets/food_item.dart';
 import 'package:restuarant_ui/views/widgets/searc_bar.dart';
+
+import 'widgets/food_item_listview_builder.dart';
 
 class StoreDashboard extends StatelessWidget {
   final Store store;
@@ -72,68 +75,48 @@ class StoreDashboard extends StatelessWidget {
                             ),
                             const Row(
                               children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.orange,
-                                  size: 16,
-                                ),
+                                Icon(Icons.star,
+                                    color: Colors.orange, size: 16),
                                 Text(
                                   '(4.5)',
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                const Icon(
-                                  Icons.location_pin,
-                                  size: 16,
-                                  color: Colors.white,
-                                ),
+                                const Icon(Icons.location_pin,
+                                    size: 16, color: Colors.white),
                                 const Gap(2),
                                 Text(
                                   store.address,
                                   style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                               ],
                             ),
                             const Row(
                               children: [
-                                Icon(
-                                  Icons.delivery_dining,
-                                  size: 16,
-                                  color: Colors.white,
-                                ),
+                                Icon(Icons.delivery_dining,
+                                    size: 16, color: Colors.white),
                                 Gap(2),
                                 Text(
                                   'Free Delivery',
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                               ],
                             ),
                             const Row(
                               children: [
-                                Icon(
-                                  Icons.timer_rounded,
-                                  size: 16,
-                                  color: Colors.white,
-                                ),
+                                Icon(Icons.timer_rounded,
+                                    size: 16, color: Colors.white),
                                 Gap(2),
                                 Text(
                                   '20-30 minutes',
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                               ],
                             ),
@@ -144,16 +127,14 @@ class StoreDashboard extends StatelessWidget {
                   ],
                 ),
                 buildOrderTypeRow(),
-                Row(children: [
+                Row(
+                  children: [
                     Text(
                       'Popular Items',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const Gap(10),
-                    Image.asset(
-                      fireImage,
-                      height: 20,
-                    ),
+                    Image.asset(fireImage, height: 20),
                   ],
                 ),
                 const TabBar(
@@ -168,10 +149,10 @@ class StoreDashboard extends StatelessWidget {
                 const Expanded(
                   child: TabBarView(
                     children: [
-                      FoodItemListViewBuilder(foodType: 'Fast Food'),
-                      FoodItemListViewBuilder(foodType: 'Main Course'),
-                      FoodItemListViewBuilder(foodType: 'Appetizers'),
-                      FoodItemListViewBuilder(foodType: 'Desserts'),
+                      FoodItemListViewBuilder(foodType: 'Fast Food',),
+                      FoodItemListViewBuilder(foodType: 'Main Course',),
+                      FoodItemListViewBuilder(foodType: 'Appetizers',),
+                      FoodItemListViewBuilder(foodType: 'Desserts',),
                     ],
                   ),
                 ),
@@ -180,24 +161,6 @@ class StoreDashboard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class FoodItemListViewBuilder extends StatelessWidget {
-  final String foodType;
-  const FoodItemListViewBuilder({
-    super.key,
-    required this.foodType,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      shrinkWrap: true,
-      itemCount: menu.where((item) => item.foodType == foodType).length,
-      itemBuilder: (context, index) => FoodItem(orderItem: menu[index]),
-      separatorBuilder: (context, index) => const Divider(),
     );
   }
 }

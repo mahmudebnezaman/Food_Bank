@@ -15,6 +15,23 @@ String foodImage12 = 'assets/images/food12.jpg';
 String foodImage13 = 'assets/images/food13.jpg';
 String foodImage14 = 'assets/images/food14.jpg';
 
+String friedChickenImg = 'assets/images/fried_chicken.jpg';
+String burgerImg = 'assets/images/burger.jpg';
+String pizzaImg = 'assets/images/pizza.jpg';
+String sandwichImg = 'assets/images/sandwich.jpg';
+String chickenShawarmaImg = 'assets/images/chicken_shawarma.jpg';
+String kacchiImg = 'assets/images/kacchi.jpg';
+String chickenKababImg = 'assets/images/chicken_kabab.jpg';
+String grilledSalmonImg = 'assets/images/grilled_salmon.jpg';
+String beefSteakImg = 'assets/images/beef_steak.jpg';
+String eggOmeletteImg = 'assets/images/egg_omelette.jpg';
+String bruschettaImg = 'assets/images/bruschetta.jpg';
+String springRollsImg = 'assets/images/spring_rolls.jpg';
+String stuffedMushroomsImg = 'assets/images/stuffed_mushrooms.jpg';
+String panCakesImg = 'assets/images/pan_cakes.jpg';
+String applePieImg = 'assets/images/apple_pie.jpg';
+String cheesecakeImg = 'assets/images/cheesecake.jpg';
+
 String addBanner = 'https://img.freepik.com/free-vector/fast-free-delivery-logo-with-bike-man-courier_1308-49043.jpg?w=996&t=st=1718173005~exp=1718173605~hmac=f416c0f8dcb0499118bdf6ddb32975d841204ecf32288a478dac43ce228d64a9';
 
 String dineInImage = 'assets/icons/dine_in.png';
