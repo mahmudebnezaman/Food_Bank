@@ -8,7 +8,7 @@ import 'package:restuarant_ui/const/storedetails.dart';
 import 'package:restuarant_ui/modal/store.dart';
 import 'package:restuarant_ui/views/location_changer.dart';
 import 'package:restuarant_ui/views/widgets/banner_card.dart';
-import 'package:restuarant_ui/views/widgets/searc_bar.dart';
+import 'package:restuarant_ui/views/widgets/search_bar.dart';
 import 'package:restuarant_ui/views/widgets/store_card.dart';
 import 'package:restuarant_ui/modal/location.dart';
 import 'package:restuarant_ui/control/get_address_from_lat_lng.dart';

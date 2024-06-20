@@ -79,7 +79,7 @@ class _CartViewState extends State<CartView> {
                                   ),
                                 ),
                               ),
-                              Image.network(
+                              Image.asset(
                                 cartItems[index].foodImage,
                                 height: 100,
                                 width: 100,
@@ -112,23 +112,21 @@ class _CartViewState extends State<CartView> {
                                     const EdgeInsets.symmetric(horizontal: 5),
                                 child: Column(
                                   children: [
-                                    QuantityChangerButton(
-                                      decreaseFunction: () {
-                                        setState(() {
-                                          cartItems[index].quantity--;
-                                        });
-                                      },
-                                      increaseFunction: () {},
-                                      quantity: cartItems[index].quantity,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
                                     Text(
-                                      '\$ ${cartItems[index].price}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
+                                      '\$ ${price}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.orange,
+                                      ),
+                                    ),
+                                    QuantityChangerButton(
+                                      valueChangerFunction: (value) {
+                                        cartItems[index].quantity = value;
+                                        price = cartItems[index].price * value;
+                                        setState(() {});
+                                      },
+                                      quantity: cartItems[index].quantity,
                                     ),
                                   ],
                                 ),
@@ -204,17 +202,17 @@ class _CartViewState extends State<CartView> {
     );
   }
 
-  //   void increaseFunctionality(quantity, price) {
-  //   quantity++;
-  //   price =  price * quantity;
-  //   setState(() {});
-  // }
+//   void increaseFunctionality(quantity, price) {
+//   quantity++;
+//   price =  price * quantity;
+//   setState(() {});
+// }
 
-  // void decreaseFunctionality() {
-  //   if (quantity > 1) {
-  //     quantity--;
-  //     calculatedPrice = widget.orderItem.price * quantity;
-  //     setState(() {});
-  //   }
-  // }
+// void decreaseFunctionality() {
+//   if (quantity > 1) {
+//     quantity--;
+//     calculatedPrice = widget.orderItem.price * quantity;
+//     setState(() {});
+//   }
+// }
 }

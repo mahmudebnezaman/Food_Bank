@@ -33,7 +33,7 @@ void showBottomSheet(OrderItem orderItem, BuildContext context) {
   showModalBottomSheet<void>(
     context: context,
     builder: (BuildContext context) {
-      return buildStoreBottomSheetContent(orderItem, context);
+      return BuildStoreBottomSheetContent(orderItem: orderItem);
     },
   );
 }

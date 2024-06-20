@@ -3,13 +3,9 @@ import 'package:flutter/painting.dart';
 import 'package:gap/gap.dart';
 
 import 'package:restuarant_ui/const/images.dart';
-import 'package:restuarant_ui/const/menu.dart';
-import 'package:restuarant_ui/modal/order_item.dart';
 import 'package:restuarant_ui/modal/store.dart';
 import 'package:restuarant_ui/views/widgets/banner_card.dart';
-import 'package:restuarant_ui/views/widgets/build_store_bottom_sheet_content.dart';
-import 'package:restuarant_ui/views/widgets/food_item.dart';
-import 'package:restuarant_ui/views/widgets/searc_bar.dart';
+import 'package:restuarant_ui/views/widgets/search_bar.dart';
 
 import 'widgets/food_item_listview_builder.dart';
 

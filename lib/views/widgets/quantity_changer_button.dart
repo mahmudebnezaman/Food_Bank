@@ -1,49 +1,78 @@
 import 'package:flutter/material.dart';
 
-class QuantityChangerButton extends StatelessWidget {
-  final VoidCallback increaseFunction;
-  final VoidCallback decreaseFunction;
+class QuantityChangerButton extends StatefulWidget {
+  final Function(int) valueChangerFunction;
   final int quantity;
 
   const QuantityChangerButton({
     super.key,
-    required this.decreaseFunction,
-    required this.increaseFunction,
+    required this.valueChangerFunction,
     required this.quantity,
   });
+
+  @override
+  _QuantityChangerButtonState createState() => _QuantityChangerButtonState();
+}
+
+class _QuantityChangerButtonState extends State<QuantityChangerButton> {
+  late int value;
+
+  @override
+  void initState() {
+    super.initState();
+    value = widget.quantity;
+  }
+
+  void _increment() {
+    setState(() {
+      value++;
+      widget.valueChangerFunction(value);
+    });
+  }
+
+  void _decrement() {
+    setState(() {
+      if (value > 1) {
+        value--;
+        widget.valueChangerFunction(value);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         buildAmountChangeIconButton(
-            onTap: decreaseFunction, icon: Icons.remove_rounded),
+          onTap: _decrement,
+          icon: Icons.remove_rounded,
+        ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: Text(
-            '$quantity',
+            '$value',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         buildAmountChangeIconButton(
-            onTap: increaseFunction, icon: Icons.add_rounded),
+          onTap: _increment,
+          icon: Icons.add_rounded,
+        ),
       ],
     );
   }
 
-  InkWell buildAmountChangeIconButton({onTap, icon}) {
-    return InkWell(
-      customBorder: const CircleBorder(),
-      onTap: onTap,
-      child: CircleAvatar(
-        radius: 15,
-        child: Icon(
-          icon,
-          size: 20,
-        ),
+  CircleAvatar buildAmountChangeIconButton({required void Function() onTap, required IconData icon}) {
+    return CircleAvatar(
+      child: IconButton(
+        onPressed: onTap,
+        icon: Icon(icon),
       ),
     );
   }
