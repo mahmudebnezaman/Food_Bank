@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:restuarant_ui/views/home_view.dart';
+import 'package:restuarant_ui/views/splash_screen.dart';
 
 class RestaurantUI extends StatelessWidget {
   const RestaurantUI({super.key});
@@ -17,9 +17,7 @@ class RestaurantUI extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,
       ),
-      home: const RestaurantHomeView(
-        title: 'UI',
-      ),
+      home: const SplashScreen(),
     );
   }
 }

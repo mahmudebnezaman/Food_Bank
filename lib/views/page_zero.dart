@@ -1,9 +1,10 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:restuarant_ui/const/images.dart';
 import 'package:restuarant_ui/const/storedetails.dart';
@@ -26,7 +27,6 @@ class PageZero extends StatefulWidget {
 
 class _PageZeroState extends State<PageZero> {
   String? _currentAddress;
-  Position? _currentPosition;
   double zoomLevel = 15.0;
   bool displayOnly = false;
 
@@ -37,184 +37,192 @@ class _PageZeroState extends State<PageZero> {
   void initState() {
     super.initState();
     storeNames();
-    getAddress(context);
   }
 
-  void getAddress(context) async {
-    _currentPosition = await getCurrentPosition(context);
-    _currentAddress = await getAddressFromLatLng(
-      _currentPosition!.latitude,
-      _currentPosition!.longitude,
+  Future<void> loadUserAddressFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    _currentAddress = prefs.getString('userAddress');
+    _selectedLocation = SimpleLocationResult.fromJson(
+      jsonDecode(prefs.getString('userLocation') ?? '{}'),
     );
-    _selectedLocation = SimpleLocationResult(
-      _currentPosition!.latitude,
-      _currentPosition!.longitude,
-    );
-    setState(() {});
   }
 
   void changeLocation(SimpleLocationResult newAddress) async {
     _selectedLocation = newAddress;
     _currentAddress =
         await getAddressFromLatLng(newAddress.latitude, newAddress.longitude);
+    saveUserAddressToPrefs(_currentAddress.toString(), _selectedLocation);
     setState(() {});
+  }
+    Future<void> saveUserAddressToPrefs(String address, SimpleLocationResult location) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userAddress', address);
+    await prefs.setString('userLocation', jsonEncode(location));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-      visible: _currentAddress != null,
-      replacement: const Center(
-        child: CircularProgressIndicator(),
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Text(_currentAddress ?? 'Detecting Location'),
-              IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => selectMapDialog(
-                        ctx, _currentAddress ?? 'Detecting Location'),
-                  );
-                },
-                icon: const Icon(Icons.location_pin),
-              ),
-            ],
-          ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return FutureBuilder<void>(
+      future: loadUserAddressFromPrefs(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Row(
               children: [
-                const CustomSearchBar(),
-                buildOrderTypeRow(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4.0,
-                    horizontal: 8.0,
-                  ),
-                  child: Row(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Restaurant Near You',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const Gap(5),
-                          Image.asset(
-                            fireImage,
-                            height: 20,
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Text(
-                        'View All',
-                        style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.bodyMedium!.fontSize,
-                          color: Colors.orange,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.27,
-                  child: Visibility(
-                    visible: (storeDetails[_currentAddress] != null),
-                    replacement: Image.asset(comingSoonImage),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: storeDetails[_currentAddress]?.length ?? 2,
-                      // itemCount: 14,
-                      itemBuilder: (context, index) => InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => StoreDashboard(
-                                  store: storeDetails[_currentAddress]![index],
-                                ),
-                              ));
-                        },
-                        child: SizedBox(
-                          width: MediaQuery.sizeOf(context).width * 0.4,
-                          child: StoreCard(
-                            address:
-                                storeDetails[_currentAddress]![index].address,
-                            storeImage: storeDetails[_currentAddress]![index]
-                                .storeBanner,
-                            storeName:
-                                storeDetails[_currentAddress]![index].storeName,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    log(storeDetails[_currentAddress] as String);
+                Text(_currentAddress ?? 'Detecting Location'),
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => selectMapDialog(
+                          ctx, _currentAddress ?? 'Detecting Location'),
+                    );
                   },
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Image.network(
-                      addBanner,
-                      height: 140,
-                      width: double.maxFinite,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  icon: const Icon(Icons.location_pin),
                 ),
-                Visibility(
-                  visible: (storeDetails[_currentAddress] != null),
-                  replacement: Image.asset(comingSoonImage),
-                  child: GridView.builder(
-                    reverse: true,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 8.0,
-                        crossAxisSpacing: 8.0,
-                        mainAxisExtent: 250),
-                    padding: const EdgeInsets.all(8.0),
-                    itemCount: storeDetails[_currentAddress]?.length ?? 2,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => StoreDashboard(
-                                  store: storeDetails[_currentAddress]![index],
-                                ),
-                              ));
-                        },
-                        child: StoreCard(
-                          address: storeDetails[_currentAddress]![index].address,
-                          storeImage:
-                              storeDetails[_currentAddress]![index].storeBanner,
-                          storeName:
-                              storeDetails[_currentAddress]![index].storeName,
-                        ),
-                      );
-                    },
-                  ),
-                )
               ],
             ),
           ),
-        ),
-      ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CustomSearchBar(),
+                  buildOrderTypeRow(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4.0,
+                      horizontal: 8.0,
+                    ),
+                    child: Row(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Restaurant Near You',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            const Gap(5),
+                            Image.asset(
+                              fireImage,
+                              height: 20,
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Text(
+                          'View All',
+                          style: TextStyle(
+                            fontSize: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .fontSize,
+                            color: Colors.orange,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height * 0.27,
+                    child: Visibility(
+                      visible: (storeDetails[_currentAddress] != null),
+                      replacement: Image.asset(comingSoonImage),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: storeDetails[_currentAddress]?.length ?? 2,
+                        itemBuilder: (context, index) => InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoreDashboard(
+                                    store: storeDetails[_currentAddress]![index],
+                                  ),
+                                ));
+                          },
+                          child: SizedBox(
+                            width: MediaQuery.sizeOf(context).width * 0.4,
+                            child: StoreCard(
+                              address: storeDetails[_currentAddress]![index]
+                                  .address,
+                              storeImage: storeDetails[_currentAddress]![index]
+                                  .storeBanner,
+                              storeName: storeDetails[_currentAddress]![index]
+                                  .storeName,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      log(storeDetails[_currentAddress] as String);
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Image.network(
+                        addBanner,
+                        height: 140,
+                        width: double.maxFinite,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: (storeDetails[_currentAddress] != null),
+                    replacement: Image.asset(comingSoonImage),
+                    child: GridView.builder(
+                      reverse: true,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 8.0,
+                              crossAxisSpacing: 8.0,
+                              mainAxisExtent: 250),
+                      padding: const EdgeInsets.all(8.0),
+                      itemCount: storeDetails[_currentAddress]?.length ?? 2,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoreDashboard(
+                                    store: storeDetails[_currentAddress]![index],
+                                  ),
+                                ));
+                          },
+                          child: StoreCard(
+                            address: storeDetails[_currentAddress]![index]
+                                .address,
+                            storeImage: storeDetails[_currentAddress]![index]
+                                .storeBanner,
+                            storeName: storeDetails[_currentAddress]![index]
+                                .storeName,
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

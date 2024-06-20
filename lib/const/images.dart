@@ -1,3 +1,5 @@
+String appIcon = 'assets/icons/app_icon.png';
+
 String bannermage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROw9D7oZxmT89UE-IGZpCj1kvIsafi9ljEpg&s';
 
 String foodImage1 = 'assets/images/food1.jpg';
