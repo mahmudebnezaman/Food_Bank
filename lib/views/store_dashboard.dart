@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:gap/gap.dart';
 
 import 'package:restuarant_ui/const/images.dart';

@@ -11,10 +11,10 @@ class QuantityChangerButton extends StatefulWidget {
   });
 
   @override
-  _QuantityChangerButtonState createState() => _QuantityChangerButtonState();
+  QuantityChangerButtonState createState() => QuantityChangerButtonState();
 }
 
-class _QuantityChangerButtonState extends State<QuantityChangerButton> {
+class QuantityChangerButtonState extends State<QuantityChangerButton> {
   late int value;
 
   @override

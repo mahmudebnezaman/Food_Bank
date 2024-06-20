@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restuarant_ui/modal/order_item.dart';
-import 'package:restuarant_ui/views/widgets/quantity_changer_button.dart';
+import 'package:restuarant_ui/views/widgets/build_cart_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CartView extends StatefulWidget {
@@ -11,22 +11,39 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-  double price = 0;
+  final ValueNotifier<List<OrderItem>> cartItemsNotifier = ValueNotifier([]);
 
-  Future<List<OrderItem>> loadCartItemsFromPrefs() async {
+  double subTotal = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadCartItemsFromPrefs();
+  }
+
+  void getSubTotal() {
+    subTotal = 0;
+    for (OrderItem item in cartItemsNotifier.value) {
+      subTotal += item.price * item.quantity;
+    }
+    setState(() {});
+  }
+
+  Future<void> loadCartItemsFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final encodedList = prefs.getStringList('cartItems');
     if (encodedList != null) {
-      return encodedList.map((item) => OrderItem.fromJson(item)).toList();
-    } else {
-      return [];
+      final cartItems =
+          encodedList.map((item) => OrderItem.fromJson(item)).toList();
+      cartItemsNotifier.value = cartItems;
+      getSubTotal();
     }
   }
 
-  Future<void> saveCartItemsToPrefs(List<OrderItem> items) async {
+  Future<void> saveCartItemsToPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    final encodedList = items.map((item) => item.toJsonString()).toList();
-    // print('saved value: $encodedList');
+    final encodedList =
+        cartItemsNotifier.value.map((item) => item.toJsonString()).toList();
     await prefs.setStringList('cartItems', encodedList);
   }
 
@@ -40,17 +57,12 @@ class _CartViewState extends State<CartView> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: FutureBuilder<List<OrderItem>>(
-            future: loadCartItemsFromPrefs(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          child: ValueListenableBuilder<List<OrderItem>>(
+            valueListenable: cartItemsNotifier,
+            builder: (context, cartItems, _) {
+              if (cartItems.isEmpty) {
                 return const Center(child: Text('No items in the cart'));
               } else {
-                final cartItems = snapshot.data!;
                 return SingleChildScrollView(
                   child: Column(
                     children: [
@@ -58,113 +70,50 @@ class _CartViewState extends State<CartView> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: cartItems.length,
-                        itemBuilder: (context, index) => Card(
-                          clipBehavior: Clip.antiAlias,
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  cartItems.remove(cartItems[index]);
-                                  saveCartItemsToPrefs(cartItems);
-                                  loadCartItemsFromPrefs();
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  color: Colors.amber.shade200,
-                                  height: 100,
-                                  child: const Icon(
-                                    Icons.delete_outlined,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                ),
-                              ),
-                              Image.asset(
-                                cartItems[index].foodImage,
-                                height: 100,
-                                width: 100,
-                                fit: BoxFit.cover,
-                                isAntiAlias: true,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      cartItems[index].foodName,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                    ),
-                                    Text(
-                                      cartItems[index].foodDetails,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      '\$ ${price}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.orange,
-                                      ),
-                                    ),
-                                    QuantityChangerButton(
-                                      valueChangerFunction: (value) {
-                                        cartItems[index].quantity = value;
-                                        price = cartItems[index].price * value;
-                                        setState(() {});
-                                      },
-                                      quantity: cartItems[index].quantity,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
+                        itemBuilder: (context, index) => CartItemCard(
+                          orderItem: cartItems[index],
+                          onDelete: () {
+                            cartItems.removeAt(index);
+                            cartItemsNotifier.value = List.from(cartItems);
+                            saveCartItemsToPrefs();
+                            getSubTotal();
+                          },
+                          onQuantityChange: (newQuantity) {
+                            cartItems[index].quantity = newQuantity;
+                            cartItemsNotifier.value = List.from(cartItems);
+                            saveCartItemsToPrefs();
+                            getSubTotal();
+                          },
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Card(
+                      const SizedBox(height: 10),
+                      Card(
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Price Details'),
-                              Divider(),
+                              const Text('Price Details'),
+                              const Divider(),
                               Row(
                                 children: [
-                                  Text('Sub total'),
-                                  Spacer(),
-                                  Text('\$100'),
+                                  const Text('Sub total'),
+                                  const Spacer(),
+                                  Text('\$ $subTotal'),
                                 ],
                               ),
-                              Row(
+                              const Row(
                                 children: [
                                   Text('Service Fee'),
                                   Spacer(),
                                   Text('\$1'),
                                 ],
                               ),
-                              Row(
+                              const Row(
                                 children: [
                                   Text('Delivery Charge'),
                                   Spacer(),
-                                  Text('\$10'),
+                                  Text('\$0.0'),
                                 ],
                               ),
                             ],
@@ -184,7 +133,7 @@ class _CartViewState extends State<CartView> {
         child: Row(
           children: [
             Text(
-              '\$ 100.0',
+              '\$ $subTotal',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Spacer(),
@@ -193,6 +142,9 @@ class _CartViewState extends State<CartView> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               child: const Text('CHECKOUT'),
             ),
@@ -201,18 +153,4 @@ class _CartViewState extends State<CartView> {
       ),
     );
   }
-
-//   void increaseFunctionality(quantity, price) {
-//   quantity++;
-//   price =  price * quantity;
-//   setState(() {});
-// }
-
-// void decreaseFunctionality() {
-//   if (quantity > 1) {
-//     quantity--;
-//     calculatedPrice = widget.orderItem.price * quantity;
-//     setState(() {});
-//   }
-// }
 }

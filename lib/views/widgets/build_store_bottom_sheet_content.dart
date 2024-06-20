@@ -24,7 +24,8 @@ class _BuildStoreBottomSheetContentState
     extends State<BuildStoreBottomSheetContent> {
   double price = 0;
   List<OrderItem> cartItems = [];
-  late int quantity;
+  int quantity = 1;
+  bool isLoading = true;
 
   Future<void> loadCartItemsFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
@@ -33,6 +34,9 @@ class _BuildStoreBottomSheetContentState
       cartItems = encodedList.map((item) => OrderItem.fromJson(item)).toList();
       checkIfItemExistsInCart();
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void checkIfItemExistsInCart() {
@@ -41,16 +45,13 @@ class _BuildStoreBottomSheetContentState
         quantity = item.quantity;
         log(quantity.toString());
         price = item.price * quantity;
-        setState(() {
-
-        });
+        setState(() {});
         return;
       }
     }
-    setState(() {
-      price = widget.orderItem.price * widget.orderItem.quantity;
-      quantity = widget.orderItem.quantity;
-    });
+    price = widget.orderItem.price * widget.orderItem.quantity;
+    quantity = widget.orderItem.quantity;
+    setState(() {});
   }
 
   Future<void> saveCartItemsToPrefs(List<OrderItem> items) async {
@@ -61,13 +62,18 @@ class _BuildStoreBottomSheetContentState
 
   @override
   void initState() {
-    price = widget.orderItem.price;
-    loadCartItemsFromPrefs();
     super.initState();
+    loadCartItemsFromPrefs();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.6,
       child: Column(
@@ -115,7 +121,7 @@ class _BuildStoreBottomSheetContentState
                     ),
                     const Spacer(),
                     Text(
-                      '\$ ${price}',
+                      '\$ $price',
                       style: const TextStyle(
                         color: Colors.orange,
                         fontSize: 20,
