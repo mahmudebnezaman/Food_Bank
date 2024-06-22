@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:restuarant_ui/modal/order_item.dart';
 import 'package:restuarant_ui/views/widgets/build_cart_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,7 +87,7 @@ class _CartViewState extends State<CartView> {
                           },
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const Gap(10),
                       Card(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
