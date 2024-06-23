@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:restuarant_ui/modal/order_item.dart';
 import 'package:restuarant_ui/views/widgets/quantity_changer_button.dart';
 
@@ -45,7 +46,7 @@ class CartItemCard extends StatelessWidget {
             fit: BoxFit.cover,
             isAntiAlias: true,
           ),
-          const SizedBox(width: 10),
+          const Gap(10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,35 +55,39 @@ class CartItemCard extends StatelessWidget {
                   orderItem.foodName,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
+                const Text(
+                  'Free Delivery',
+                ),
                 Text(
-                  orderItem.foodDetails,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  '\$ ${orderItem.price} x ${orderItem.quantity}',
+                  style: const TextStyle(
+                    // fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    // color: Colors.orange,
+                  ),
                 ),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Column(
-              children: [
-                Text(
-                  '\$ ${orderItem.price * orderItem.quantity}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.orange,
-                  ),
+          Column(
+            children: [
+              Text(
+                '\$ ${orderItem.price * orderItem.quantity}',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.orange,
                 ),
-                QuantityChangerButton(
-                  valueChangerFunction: (value) {
-                    onQuantityChange(value);
-                  },
-                  quantity: orderItem.quantity,
-                ),
-              ],
-            ),
-          )
+              ),
+              // const Spacer(),
+              QuantityChangerButton(
+                valueChangerFunction: (value) {
+                  onQuantityChange(value);
+                },
+                quantity: orderItem.quantity,
+              ),
+            ],
+          ),
         ],
       ),
     );
