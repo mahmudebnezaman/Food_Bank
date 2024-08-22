@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:restuarant_ui/modal/order_item.dart';
-
-import 'package:restuarant_ui/views/widgets/quantity_changer_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:restuarant_ui/modal/order_item.dart';
+import 'package:restuarant_ui/views/widgets/quantity_changer_button.dart';
 
 class BuildStoreBottomSheetContent extends StatefulWidget {
   final OrderItem orderItem;
@@ -178,9 +178,7 @@ class _BuildStoreBottomSheetContentState
                               ),
                             );
                           }
-                          await saveCartItemsToPrefs(cartItems);
                           Navigator.pop(context);
-                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -188,6 +186,7 @@ class _BuildStoreBottomSheetContentState
                               ),
                             ),
                           );
+                          await saveCartItemsToPrefs(cartItems);
                         },
                         child: const Text('Add to Cart'),
                       ),

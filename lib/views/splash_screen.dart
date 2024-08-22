@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:restuarant_ui/const/images.dart';
+import 'package:restuarant_ui/const/storedetails.dart';
 import 'package:restuarant_ui/control/get_address_from_lat_lng.dart';
 import 'package:restuarant_ui/modal/location.dart';
 import 'package:restuarant_ui/views/home_view.dart';
@@ -45,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    storeNames();
     getAddress(context).then((_) {
       Navigator.pushReplacement(
         context,

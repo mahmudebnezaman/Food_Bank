@@ -53,6 +53,7 @@ class _LocationChangerState extends State<LocationChanger> {
   Future<void> searchLocation(String searchTerm) async {
     log('Searching for $searchTerm');
     final coordinates = await getCoordinatesFromSearch(searchTerm);
+    if (!mounted) return;
     if (coordinates != null) {
       changeLocation(coordinates['latitude']!, coordinates['longitude']!);
       newLocation = SimpleLocationResult(

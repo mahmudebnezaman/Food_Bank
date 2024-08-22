@@ -37,22 +37,29 @@ Future<bool> handleLocationPermission(BuildContext ctx) async {
 
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
-    ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(
-        content: Text('Location services are disabled. Please enable the services')));
+    if (ctx.mounted){
+      ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(
+          content: Text('Location services are disabled. Please enable the services')));
+    }
     return false;
   }
   permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      ScaffoldMessenger.of(ctx).showSnackBar(
-          const SnackBar(content: Text('Location permissions are denied')));
+      if (ctx.mounted){
+        ScaffoldMessenger.of(ctx).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+      }
       return false;
     }
   }
   if (permission == LocationPermission.deniedForever) {
-    ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(
-        content: Text('Location permissions are permanently denied, we cannot request permissions.')));
+    if(ctx.mounted) {
+      ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+    }
     return false;
   }
   return true;

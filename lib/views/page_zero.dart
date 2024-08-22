@@ -36,7 +36,6 @@ class _PageZeroState extends State<PageZero> {
   @override
   void initState() {
     super.initState();
-    storeNames();
   }
 
   Future<void> loadUserAddressFromPrefs() async {
